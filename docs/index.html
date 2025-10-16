@@ -1,0 +1,55 @@
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>QuASH: Using Natural-Language Heuristics to Query Visual-Language Robotic Maps</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<html lang="en">
+    <body>
+        <h1 class="title">QuASH: Using Natural-Language Heuristics to<br/>Query Visual-Language Robotic Maps</h1>
+        <div class="center">
+            <iframe width="100%" height="37%" src="https://www.youtube.com/embed/8CtknlDPRtE">
+            </iframe>
+            <div class="break"></div>
+            <div class="buttonbox">
+                <a href="https://github.com/aalto-intelligent-robotics/quash" class="button">code</a> <a href="https://arxiv.org/search/cs?searchtype=author&query=Pekkanen,+M" class="button">paper</a>
+            </div>
+            <div class="break"></div>
+            <div class="authorbox">
+                <b>Authors:</b>
+                <a class="link" href="https://research.aalto.fi/en/persons/matti-pekkanen">Matti Pekkanen</a>, <a
+                    class="link" href="mailto:matti.pekkanen@aalto.fi">(matti.pekkanen@aalto.fi)</a>
+                <a class="link" href="https://research.aalto.fi/en/persons/francesco-verdoja">Francesco Verdoja</a>, and
+                <a class="link" href="https://research.aalto.fi/en/persons/ville-kyrki">Ville Kyrki</a>
+                <br />
+                <b>Affiliation:</b> School of Electrical Engineering, Aalto University, Finland
+            </div>
+            <div class="break"></div>
+            <p class="abstract">
+                Embeddings from Visual-Language Models are increasingly utilized to represent semantics in robotic maps, offering an
+                open-vocabulary scene understanding that surpasses traditional, limited labels. Embeddings enable on-demand querying by
+                comparing embedded user text prompts to map embeddings via a similarity metric. The key challenge in performing the task
+                indicated in a query is that the robot must determine the parts of the environment relevant to the query.
+
+                This paper proposes a solution to this challenge. We leverage natural-language synonyms and antonyms associated with the
+                query within the embedding space, applying heuristics to estimate the language space relevant to the query, and use that
+                to train a classifier to partition the environment into matches and non-matches.
+                We evaluate our method through extensive experiments, querying both maps and standard image benchmarks. The results
+                demonstrate increased queryability of maps and images. Our querying technique is agnostic to the representation and
+                encoder used, and requires limited training.
+            </p>
+            <h2>Citation</h2>
+            <p>
+                If you find this work useful, please consider citing:
+            </p>
+            <code class="language-bibtex">
+                # TODO
+            </code>
+            <h2>Acknowledgements</h2>
+            <p>
+                Part of the codebase is based on the original works of <a class="link" href="https://vlmaps.github.io/">VLMaps</a> and <a class="link" href="https://pengsongyou.github.io/openscene">OpenScene</a>.
+            </p>
+        </div>
+    </body>
+</html>
