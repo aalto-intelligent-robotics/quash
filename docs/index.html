@@ -1,55 +1,260 @@
+<!doctype html>
+<html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
     <title>QuASH: Using Natural-Language Heuristics to Query Visual-Language Robotic Maps</title>
     <link rel="stylesheet" href="style.css" />
 </head>
-<html lang="en">
-    <body>
-        <h1 class="title">QuASH: Using Natural-Language Heuristics to<br/>Query Visual-Language Robotic Maps</h1>
-        <div class="center">
-            <iframe width="100%" height="37%" src="https://www.youtube.com/embed/8CtknlDPRtE">
-            </iframe>
-            <div class="break"></div>
-            <div class="buttonbox">
-                <a href="https://github.com/aalto-intelligent-robotics/quash" class="button">code</a> <a id="appendix" href="https://arxiv.org/abs/2510.14546" class="button">paper</a> <a href="https://github.com/aalto-intelligent-robotics/quash/blob/main/Appendix.md" class="button">appendix</a>
-            </div>
-            <div class="break"></div>
-            <div class="authorbox">
-                <b>Authors:</b>
-                <a class="link" href="https://research.aalto.fi/en/persons/matti-pekkanen">Matti Pekkanen</a> <a
-                    class="link" href="mailto:matti.pekkanen@aalto.fi">(matti.pekkanen@aalto.fi)</a>,
-                <a class="link" href="https://research.aalto.fi/en/persons/francesco-verdoja">Francesco Verdoja</a>, and
-                <a class="link" href="https://research.aalto.fi/en/persons/ville-kyrki">Ville Kyrki</a>
-                <br />
-                <b>Affiliation:</b> School of Electrical Engineering, Aalto University, Finland
-            </div>
-            <div class="break"></div>
-            <p class="abstract">
-                Embeddings from Visual-Language Models are increasingly utilized to represent semantics in robotic maps, offering an
-                open-vocabulary scene understanding that surpasses traditional, limited labels. Embeddings enable on-demand querying by
-                comparing embedded user text prompts to map embeddings via a similarity metric. The key challenge in performing the task
-                indicated in a query is that the robot must determine the parts of the environment relevant to the query.
 
-                This paper proposes a solution to this challenge. We leverage natural-language synonyms and antonyms associated with the
-                query within the embedding space, applying heuristics to estimate the language space relevant to the query, and use that
-                to train a classifier to partition the environment into matches and non-matches.
-                We evaluate our method through extensive experiments, querying both maps and standard image benchmarks. The results
-                demonstrate increased queryability of maps and images. Our querying technique is agnostic to the representation and
-                encoder used, and requires limited training.
-            </p>
-            <h2>Citation</h2>
-            <p>
-                If you find this work useful, please consider citing:
-            </p>
-            <code class="language-bibtex">
-                # TODO
-            </code>
-            <h2>Acknowledgements</h2>
-            <p>
-                Part of the codebase is based on the original works of <a class="link" href="https://vlmaps.github.io/">VLMaps</a> and <a class="link" href="https://pengsongyou.github.io/openscene">OpenScene</a>.
-            </p>
+<body>
+    <button class="theme-toggle" type="button" aria-label="Toggle dark and light mode"><span class="icon"
+            aria-hidden="true">◐</span><span class="theme-label">Auto</span></button>
+
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="hero-logos" aria-label="Conference and university logos">
+                <div class="hero-logo hero-logo-aalto">
+                    <img src="images/logo-86764-1.png" alt="Aalto University" />
+                </div>
+                <div class="hero-logo hero-logo-iros hero-logo-icra">
+                    <img src="poster-assets/icra-logo.png" alt="ICRA 2026" />
+                </div>
+            </div>
+            <div class="hero-title">
+                <h1>
+                    <span class="title-kicker-v7">QuASH:</span>
+                    <span>Using Natural-Language Heuristics</span>
+                    <span>to Query Visual-Language</span>
+                    <span>Robotic Maps</span>
+                </h1>
+                <p class="authors">
+                    <a class="authlink" href="https://research.aalto.fi/en/persons/matti-pekkanen">Matti Pekkanen</a>,
+                    <a class="authlink" href="https://research.aalto.fi/en/persons/francesco-verdoja">Francesco Verdoja</a>, and
+                    <a class="authlink" href="https://research.aalto.fi/en/persons/ville-kyrki">Ville Kyrki</a>
+                </p>
+                <p class="institute">Aalto University</p>
+            </div>
+            <div class="buttonbox">
+                <a class="button" href="https://github.com/aalto-intelligent-robotics/quash">Code</a>
+                <a class="button" href="https://arxiv.org/abs/2510.14546">Paper</a>
+                <a class="button" href="https://github.com/aalto-intelligent-robotics/quash/blob/main/Appendix.md">Appendix</a>
+                <a class="button" href="mailto:matti.pekkanen@aalto.fi">Contact</a>
+            </div>
         </div>
-    </body>
+    </header>
+
+    <main>
+
+        <section class="block block-wide video-block">
+            <h2 class="block-title">Video</h2>
+            <div class="block-body">
+                <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/8CtknlDPRtE" title="QuASH project video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+        <section class="block block-half">
+            <h2 class="block-title">The problem</h2>
+            <div class="block-body">
+                <ul>
+                    <li>VLM embeddings are increasingly used as semantic descriptors in maps.</li>
+                    <li><span class="alert">The key challenge is querying the embeddings.</span></li>
+                    <li>State-of-the-art methods based on thresholding distances or using a single complementary query are insufficient for visual classification.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="block block-half">
+            <h2 class="block-title">The solution</h2>
+            <div class="block-body">
+                <ul>
+                    <li><span class="alert">Training a classifier on text-description embeddings yields a good classifier in the visual domain</span>, because textual descriptions and visual features are embedded in the same space.</li>
+                    <li>QuASH uses a <span class="alert">heuristic of natural-language synonyms and antonyms</span> associated with the query to train a classifier in the embedding space.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="block block-wide">
+            <h2 class="block-title">Method</h2>
+            <div class="block-body method-layout">
+                <div>
+                    <p>To find the target set related to a query <em>q</em> in the visual space:</p>
+                    <ol>
+                        <li>Sample semantically similar words to <em>q</em> to form a query set, and sample non-matching queries in language space.</li>
+                        <li>Embed the matching and non-matching query sets with the text encoder.</li>
+                        <li>Train an off-the-shelf classifier in the shared embedding space.</li>
+                    </ol>
+                    <p>The decision boundary of the classifier yields the estimated region of embeddings that match the query.</p>
+                </div>
+                <figure class="figure-soft method-figure method-figure-light">
+                    <img src="poster-assets/quash5.svg" alt="QuASH method overview" />
+                    <figcaption>QuASH trains a classifier from query-related language embeddings and applies the decision boundary in the visual/map embedding space.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="block block-feature">
+            <h2 class="block-title">Results: Image querying</h2>
+            <div class="block-body">
+                <figure class="figure-soft">
+                    <div class="comparison-grid image-query-grid" aria-label="Image querying comparison">
+                        <div></div><strong>Sheep</strong><strong>Refrigerator</strong><strong>Person</strong><strong>Skateboard</strong>
+                        <strong class="row-label">Original</strong>
+                        <img src="images/746-sheep-COCO_val2014_000000078522-orig.png" alt="Original sheep image" />
+                        <img src="images/117-refrigerator-COCO_val2014_000000086408-orig.png" alt="Original refrigerator image" />
+                        <img src="images/116-person-COCO_val2014_000000293802-orig.png" alt="Original person image" />
+                        <img src="images/177-skateboard-COCO_val2014_000000087038-orig.png" alt="Original skateboard image" />
+                        <strong class="row-label">Ours</strong>
+                        <img src="images/746-sheep-COCO_val2014_000000078522-ours.png" alt="QuASH sheep result" />
+                        <img src="images/117-refrigerator-COCO_val2014_000000086408-ours.png" alt="QuASH refrigerator result" />
+                        <img src="images/116-person-COCO_val2014_000000293802-ours.png" alt="QuASH person result" />
+                        <img src="images/177-skateboard-COCO_val2014_000000087038-ours.png" alt="QuASH skateboard result" />
+                        <strong class="row-label">Baseline</strong>
+                        <img src="images/746-sheep-COCO_val2014_000000078522-baseline.png" alt="Baseline sheep result" />
+                        <img src="images/117-refrigerator-COCO_val2014_000000086408-baseline.png" alt="Baseline refrigerator result" />
+                        <img src="images/116-person-COCO_val2014_000000293802-baseline.png" alt="Baseline person result" />
+                        <img src="images/177-skateboard-COCO_val2014_000000087038-baseline.png" alt="Baseline skateboard result" />
+                    </div>
+                    <figcaption>Qualitative image-querying examples: original image, QuASH, and baseline.</figcaption>
+                </figure>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Dataset</th><th>Method</th><th>F1</th><th>P</th><th>R</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td rowspan="3">COCO</td><td>baseline</td><td>0.680</td><td>0.536</td><td><strong>0.929</strong></td></tr>
+                            <tr><td>Our SVM</td><td><strong>0.786</strong></td><td><strong>0.696</strong></td><td>0.901</td></tr>
+                            <tr><td>Our C-SVM</td><td>0.771</td><td>0.672</td><td>0.905</td></tr>
+                            <tr><td rowspan="3">PC 459</td><td>baseline</td><td>0.654</td><td>0.540</td><td><strong>0.831</strong></td></tr>
+                            <tr><td>Our SVM</td><td>0.667</td><td><strong>0.693</strong></td><td>0.643</td></tr>
+                            <tr><td>Our C-SVM</td><td><strong>0.728</strong></td><td>0.680</td><td>0.783</td></tr>
+                            <tr><td rowspan="3">Matterport</td><td>baseline</td><td>0.544</td><td>0.448</td><td>0.691</td></tr>
+                            <tr><td>Our SVM</td><td><strong>0.621</strong></td><td><strong>0.626</strong></td><td>0.616</td></tr>
+                            <tr><td>Our C-SVM</td><td>0.579</td><td>0.483</td><td><strong>0.724</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="block block-feature">
+            <h2 class="block-title">Results: Map querying</h2>
+            <div class="block-body">
+                <figure class="figure-soft">
+                    <div class="comparison-grid map-query-grid" aria-label="Map querying comparison">
+                        <div></div><strong>Chair</strong><strong>Shelving</strong><strong>Wall</strong><strong>Table</strong>
+                        <strong class="row-label">Ours</strong>
+                        <img src="images/lseg-0-3-chair-maxrecall-ours.png" alt="Chair result, ours" />
+                        <img src="images/openseg-6-31-shelving-maxf1-ours.png" alt="Shelving result, ours" />
+                        <img src="images/openseg-8-1-wall-maxf1-ours.png" alt="Wall result, ours" />
+                        <img src="images/openseg-9-5-table-maxprecision-ours.png" alt="Table result, ours" />
+                        <strong class="row-label">Baseline</strong>
+                        <img src="images/lseg-0-3-chair-maxrecall-bl.png" alt="Chair result, baseline" />
+                        <img src="images/openseg-6-31-shelving-maxf1-bl.png" alt="Shelving result, baseline" />
+                        <img src="images/openseg-8-1-wall-maxf1-bl.png" alt="Wall result, baseline" />
+                        <img src="images/openseg-9-5-table-maxprecision-bl.png" alt="Table result, baseline" />
+                    </div>
+                    <figcaption>Map-querying examples comparing QuASH and the baseline.</figcaption>
+                </figure>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Encoder</th><th>Method</th><th>F1</th><th>P</th><th>R</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td rowspan="3">LSeg</td><td>baseline</td><td>0.561</td><td>0.536</td><td>0.589</td></tr>
+                            <tr><td>our ground truth</td><td><strong>0.574</strong></td><td><strong>0.567</strong></td><td>0.583</td></tr>
+                            <tr><td>our LLM</td><td>0.396</td><td>0.289</td><td><strong>0.656</strong></td></tr>
+                            <tr><td rowspan="3">OpenSeg</td><td>baseline</td><td>0.136</td><td>0.073</td><td><strong>0.926</strong></td></tr>
+                            <tr><td>our ground truth</td><td><strong>0.445</strong></td><td><strong>0.622</strong></td><td>0.369</td></tr>
+                            <tr><td>our LLM</td><td>0.242</td><td>0.154</td><td>0.586</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="block block-half">
+            <h2 class="block-title">Conclusion</h2>
+            <div class="block-body">
+                <ul>
+                    <li>QuASH has a higher F1-score in all image experiments.</li>
+                    <li>QuASH has the highest F1-score in map experiments with ground-truth synonyms.</li>
+                    <li>QuASH has a higher F1-score in map experiments when using OpenSeg with any heuristic.</li>
+                    <li><span class="alert">Leveraging semantic knowledge</span> to heuristically sample from language space improves visual classification when the query-distribution approximation is good.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="block block-half">
+            <h2 class="block-title">Citation</h2>
+            <div class="block-body">
+                <p>If you find this work useful, please consider citing:</p>
+                <pre class="bibtex">@inproceedings{pekkanen_2026_quash,
+    title = {{QuASH: Using Natural-Language Heuristics to Query Visual-Language Robotic Maps}},
+    author = {Pekkanen, Matti and and Verdoja, Francesco and Kyrki, Ville},
+    booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+    year = {2026},
+    month = {May},
+    address = {Vienna, Austria},
+    publisher = {IEEE},
+    pages = {XX--YY},
+    doi = {XXX}
+}</pre>
+            </div>
+        </section>
+
+        <section class="block block-wide">
+            <h2 class="block-title">Acknowledgements</h2>
+            <div class="block-body">
+                <p>Part of the codebase is based on the original works of <a href="https://vlmaps.github.io/">VLMaps</a> and <a href="https://pengsongyou.github.io/openscene">OpenScene</a>.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const root = document.documentElement;
+        const toggle = document.querySelector('.theme-toggle');
+        const label = document.querySelector('.theme-label');
+        const savedTheme = localStorage.getItem('theme');
+
+        function systemPrefersDark() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
+        function setTheme(theme) {
+            if (theme === 'auto') {
+                root.removeAttribute('data-theme');
+                localStorage.removeItem('theme');
+            } else {
+                root.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            }
+            const effective = theme === 'auto' ? (systemPrefersDark() ? 'dark' : 'light') : theme;
+            label.textContent = theme === 'auto' ? `Auto (${effective})` : theme[0].toUpperCase() + theme.slice(1);
+        }
+
+        setTheme(savedTheme || 'auto');
+
+        toggle.addEventListener('click', () => {
+            const current = root.getAttribute('data-theme') || 'auto';
+            const next = current === 'auto' ? 'light' : current === 'light' ? 'dark' : 'auto';
+            setTheme(next);
+        });
+
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if (!root.getAttribute('data-theme')) setTheme('auto');
+            });
+        }
+    </script>
+</body>
+
 </html>
