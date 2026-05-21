@@ -3,8 +3,6 @@
     --aalto-purple: #4f116a;
     --aalto-purple-dark: #3a0c4e;
     --aalto-yellow: #ffcc00;
-    --aalto-elec: #A987FF;
-    --aalto-chem: #5DD089;
     --paper: #f3f3ec;
     --ink: #1f1f24;
     --muted: #5a5a62;
@@ -103,17 +101,19 @@ body {
 .hero-logos {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    gap: clamp(1rem, 4vw, 3rem);
+    gap: clamp(0.55rem, 4vw, 3rem);
     margin-bottom: clamp(0.35rem, 1.5vw, 1rem);
 }
 
 .hero-logo {
     display: grid;
     place-items: center;
-    min-height: 92px;
+    min-width: 0;
+    min-height: clamp(44px, 9vw, 92px);
+    flex: 0 1 auto;
 }
 
 .hero-logo img {
@@ -124,18 +124,18 @@ body {
 }
 
 .hero-logo-aalto img {
-    width: clamp(150px, 20vw, 250px);
+    width: clamp(78px, 22vw, 250px);
 }
 
 .hero-logo-iros {
     background: rgba(255, 255, 255, 1.0);
-    border-radius: 22px;
-    padding: 0.7rem 1rem;
+    border-radius: clamp(10px, 2vw, 22px);
+    padding: clamp(0.25rem, 1.4vw, 0.7rem) clamp(0.4rem, 2vw, 1rem);
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
 }
 
 .hero-logo-iros img {
-    width: clamp(120px, 16vw, 200px);
+    width: clamp(90px, 28vw, 200px);
 }
 
 .hero-title {
@@ -153,262 +153,6 @@ h1 {
 
 h1 span {
     display: block;
-}
-
-.title-kicker-v0 {
-    display: inline-block;
-    width: fit-content;
-    margin-bottom: 0.25em;
-    padding: 0.06em 0.22em 0.12em;
-    color: var(--aalto-chem);
-    background: rgba(255, 255, 255, 0.10);
-    border: 2px solid var(--aalto-chem);
-    border-radius: 0.18em;
-    letter-spacing: -0.04em;
-    transform: rotate(-2deg);
-}
-
-/* v1: yellow stamped method label */
-.title-kicker-v1 {
-    display: inline-block;
-    padding: 0.06em 0.22em 0.12em;
-    color: var(--aalto-yellow);
-    background: rgba(255, 255, 255, 0.10);
-    border: 2px solid rgba(255, 204, 0, 0.55);
-    border-radius: 0.18em;
-    letter-spacing: -0.04em;
-    transform: rotate(-1deg);
-}
-
-/* v2: white glass method label */
-.title-kicker-v2 {
-    display: inline-block;
-    padding: 0.06em 0.28em 0.12em;
-    color: white;
-    background: rgba(255, 255, 255, 0.13);
-    border: 1.5px solid rgba(255, 255, 255, 0.34);
-    border-radius: 0.2em;
-    letter-spacing: -0.045em;
-    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.18);
-}
-
-/* v3: oversized white wordmark */
-.title-kicker-v3 {
-    display: block;
-    color: white;
-    font-size: 1.28em;
-    line-height: 0.85;
-    letter-spacing: -0.08em;
-    margin-bottom: 0.12em;
-    text-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
-}
-
-/* v4: lavender label */
-.title-kicker-v4 {
-    display: inline-block;
-    padding: 0.04em 0.24em 0.1em;
-    color: #f0d8ff;
-    background: rgba(240, 216, 255, 0.10);
-    border: 1.5px solid rgba(240, 216, 255, 0.42);
-    border-radius: 0.18em;
-    letter-spacing: -0.05em;
-}
-
-/* v5: restrained underline/swish */
-.title-kicker-v5 {
-    display: inline-block;
-    position: relative;
-    color: white;
-    margin-bottom: 0.18em;
-    letter-spacing: -0.055em;
-}
-
-.title-kicker-v5::after {
-    content: "";
-    position: absolute;
-    left: 0.04em;
-    right: 0.02em;
-    bottom: 0.02em;
-    height: 0.09em;
-    background: rgba(255, 255, 255, 0.38);
-    border-radius: 999px;
-    transform: rotate(-1deg);
-}
-
-/* v6: tiny yellow accent, mostly white */
-.title-kicker-v6 {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.18em;
-    color: white;
-    margin-bottom: 0.18em;
-    letter-spacing: -0.055em;
-}
-
-.title-kicker-v6::before {
-    content: "";
-    width: 0.13em;
-    height: 0.82em;
-    border-radius: 999px;
-    background: var(--aalto-yellow);
-    transform: rotate(5deg);
-}
-
-/* v7: chunky sticker / conference swag */
-.title-kicker-v7 {
-    display: inline-block;
-    padding: 0.04em 0.24em 0.11em;
-    color: #26112f;
-    background: white;
-    border: 0.055em solid var(--aalto-yellow);
-    border-radius: 0.22em;
-    letter-spacing: -0.065em;
-    transform: rotate(-2deg);
-    box-shadow:
-        0.08em 0.08em 0 var(--aalto-yellow),
-        0.16em 0.16em 0 rgba(0, 0, 0, 0.22);
-    margin-bottom: 10px;
-}
-
-.title-kicker-v72 {
-    display: inline-block;
-    padding: 0.04em 0.24em 0.11em;
-    color: #26112f;
-    background: white;
-    border: 0.055em solid var(--aalto-yellow);
-    border-radius: 0.22em;
-    letter-spacing: -0.065em;
-    transform: rotate(-5deg);
-    box-shadow:
-        0.07em 0.07em 0 var(--aalto-yellow),
-        0.14em 0.14em 0 rgba(0, 0, 0, 0.20);
-}
-
-/* v8: neon-ish cyber method name */
-.title-kicker-v8 {
-    display: inline-block;
-    color: #ffffff;
-    letter-spacing: -0.07em;
-    text-shadow:
-        0 0 0.05em rgba(255, 255, 255, 0.95),
-        0 0 0.18em rgba(240, 216, 255, 0.9),
-        0 0 0.36em rgba(255, 204, 0, 0.55),
-        0 0 0.72em rgba(255, 204, 0, 0.35);
-}
-
-/* v9: offset print / almost comic-book but still clean */
-.title-kicker-v9 {
-    display: inline-block;
-    position: relative;
-    color: white;
-    letter-spacing: -0.07em;
-    isolation: isolate;
-}
-
-.title-kicker-v9::before,
-.title-kicker-v9::after {
-    content: "QuASH:";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-}
-
-.title-kicker-v9::before {
-    color: var(--aalto-yellow);
-    transform: translate(0.055em, 0.045em);
-}
-
-.title-kicker-v9::after {
-    color: #f0d8ff;
-    transform: translate(-0.045em, -0.035em);
-    opacity: 0.75;
-}
-
-/* v10: big academic stamp */
-.title-kicker-v10 {
-    display: inline-block;
-    padding: 0.02em 0.26em 0.08em;
-    color: rgba(255, 255, 255, 0.96);
-    border: 0.06em solid rgba(255, 255, 255, 0.82);
-    border-radius: 0.08em;
-    letter-spacing: -0.045em;
-    text-transform: uppercase;
-    transform: rotate(-3deg);
-    box-shadow: inset 0 0 0 0.035em rgba(255, 255, 255, 0.22);
-}
-
-/* v11: pill badge with shine */
-.title-kicker-v11 {
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-    padding: 0.05em 0.34em 0.12em;
-    color: #26112f;
-    background:
-        linear-gradient(120deg, white 0%, #f0d8ff 44%, white 52%, #ffd84d 100%);
-    border-radius: 999px;
-    letter-spacing: -0.06em;
-    box-shadow:
-        0 0.13em 0.35em rgba(0, 0, 0, 0.22),
-        inset 0 0 0 0.035em rgba(255, 255, 255, 0.7);
-}
-
-/* v12: brutalist label */
-.title-kicker-v12 {
-    display: inline-block;
-    padding: 0.04em 0.22em 0.1em;
-    color: #26112f;
-    background: var(--aalto-yellow);
-    border: 0.055em solid #26112f;
-    border-radius: 0;
-    letter-spacing: -0.055em;
-    transform: skew(-7deg) rotate(-1deg);
-    box-shadow: 0.11em 0.11em 0 #26112f;
-}
-
-.title-kicker-v12::first-letter {
-    color: var(--aalto-purple);
-}
-
-/* v13: purple-on-purple embossed wordmark */
-.title-kicker-v13 {
-    display: inline-block;
-    color: rgba(255, 255, 255, 0.92);
-    letter-spacing: -0.075em;
-    text-shadow:
-        0.035em 0.035em 0 rgba(255, 255, 255, 0.12),
-        -0.035em -0.035em 0 rgba(0, 0, 0, 0.35),
-        0 0.18em 0.35em rgba(0, 0, 0, 0.22);
-}
-
-/* v14: caution-tape energy, probably near cringe */
-.title-kicker-v14 {
-    display: inline-block;
-    padding: 0.04em 0.3em 0.11em;
-    color: #201020;
-    background:
-        repeating-linear-gradient(-45deg,
-            var(--aalto-yellow) 0,
-            var(--aalto-yellow) 0.18em,
-            #ffe680 0.18em,
-            #ffe680 0.36em);
-    border: 0.045em solid rgba(0, 0, 0, 0.45);
-    border-radius: 0.15em;
-    letter-spacing: -0.06em;
-    transform: rotate(-1.5deg);
-    box-shadow: 0 0.12em 0.35em rgba(0, 0, 0, 0.25);
-}
-
-/* v15: playful stacked shadow */
-.title-kicker-v15 {
-    display: inline-block;
-    color: white;
-    letter-spacing: -0.08em;
-    transform: rotate(-1deg);
-    text-shadow:
-        0.045em 0.045em 0 #f0d8ff,
-        0.09em 0.09em 0 var(--aalto-yellow),
-        0.14em 0.14em 0 rgba(0, 0, 0, 0.25);
 }
 
 .authors {
@@ -816,19 +560,20 @@ pre.bibtex {
 
 @media (max-width: 760px) {
     .hero-logos {
-        gap: 0.85rem;
+        flex-wrap: nowrap;
+        gap: clamp(0.45rem, 3.5vw, 0.85rem);
     }
 
     .hero-logo {
-        min-height: 70px;
+        min-height: clamp(42px, 11vw, 70px);
     }
 
     .hero-logo-aalto img {
-        width: 150px;
+        width: clamp(78px, 31vw, 150px);
     }
 
     .hero-logo-iros img {
-        width: 135px;
+        width: clamp(90px, 34vw, 135px);
     }
 
     h1 {
@@ -867,7 +612,7 @@ pre.bibtex {
 }
 /* QuASH page additions: keep the uploaded webpage design, add only project-specific layout helpers. */
 .hero-logo-icra img {
-    width: clamp(500px, 20vw, 260px);
+    width: clamp(90px, 34vw, 260px);
 }
 
 .method-layout {
@@ -971,7 +716,20 @@ ol li {
     }
 }
 
-
+.title-kicker {
+    display: inline-block;
+    padding: 0.04em 0.24em 0.11em;
+    color: #26112f;
+    background: white;
+    border: 0.055em solid var(--aalto-yellow);
+    border-radius: 0.22em;
+    letter-spacing: -0.065em;
+    transform: rotate(-2deg);
+    box-shadow:
+        0.08em 0.08em 0 var(--aalto-yellow),
+        0.16em 0.16em 0 rgba(0, 0, 0, 0.22);
+    margin-bottom: 10px;
+}
 
 /* Review patch: keep video full-width, and remove visible backing behind image-querying images. */
 .video-block {
