@@ -1,0 +1,6 @@
+---
+  dataset: matterport
+  base_dir: /home/user/hdd/datasets/vlmaps_dataset
+  category_path: /home/user/code/vlmaps/cfg/mpcat40.tsv
+  task: segmentation
+  single_map: False

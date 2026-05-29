@@ -1,0 +1,17 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps
+  - params: default
+  # - data_paths: flat
+  # - map_config: flat
+  # - params: flat
+  - _self_
+nav:
+  valid_range: 1
+  vis: True
+  tasks_per_scene: 20
+scene_id: 1
+force: False
+store_all: True
+force_store_all: True
+#store_all: True

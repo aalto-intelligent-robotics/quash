@@ -1,0 +1,429 @@
+from __future__ import annotations
+from pathlib import Path
+from typing import Any, Dict, List, Tuple, Union
+import clip
+import numpy as np
+from omegaconf import DictConfig
+from scipy.ndimage import binary_closing, binary_dilation, gaussian_filter
+import torch
+from vlmaps.utils.visualize_utils import pool_3d_label_to_2d
+
+# from utils.ai2thor_constant import ai2thor_class_list
+# from utils.clip_mapping_utils import load_map
+# from utils.planning_utils import (
+#     find_similar_category_id_static,
+#     get_dynamic_obstacles_map,
+#     get_lseg_score,
+#     get_segment_islands_pos,
+#     mp3dcat,
+#     segment_lseg_map,
+# )
+from vlmaps.map.vlmap_builder import VLMapBuilder
+from vlmaps.utils.mapping_utils import load_3d_map
+from vlmaps.map.map import Map
+from vlmaps.utils.index_utils import (
+    find_similar_category_id_static,
+    get_segment_islands_pos,
+    get_dynamic_obstacles_map_3d,
+)
+from vlmaps.utils.clip_utils import get_lseg_score
+
+from enum import Enum
+
+
+class MapType(Enum):
+    REGULAR = 0
+    POSTPROCESSED = 1
+    INSTANCES = 2
+    PREDICTED = 3
+    VLMAP_INSTANCES = 4
+    OUR_INSTANCES = 5
+    PREDICTED_POSTPROCESSED = 6
+    MEDIAN = 7
+    TRANSFORMER_NEW = 8
+    TRANSFORMER_LORA = 9
+    SAMPLE = 10
+
+
+class VLMap(Map):
+    def __init__(self, map_config: DictConfig, data_dir: str = "", force: bool = False, store_all: bool = False):
+        super().__init__(map_config, data_dir=data_dir)
+        self.scores_mat = None
+        self.categories = None
+        self.force = force
+        self.store_all = store_all
+
+        # TODO: check if needed
+        # map_path = os.path.join(map_dir, "grid_lseg_1.npy")
+        # self.map = load_map(map_path)
+        # self.map_cropped = self.map[self.xmin : self.xmax + 1, self.ymin : self.ymax + 1]
+        # self._init_clip()
+        # self._customize_obstacle_map(
+        #     map_config["potential_obstacle_names"],
+        #     map_config["obstacle_names"],
+        #     vis=False,
+        # )
+        # self.obstacles_new_cropped = Map._dilate_map(
+        #     self.obstacles_new_cropped == 0,
+        #     map_config["dilate_iter"],
+        #     map_config["gaussian_sigma"],
+        # )
+        # self.obstacles_new_cropped = self.obstacles_new_cropped == 0
+        # self.load_categories()
+        # print("a VLMap is created")
+        # pass
+
+    def create_map(self, data_dir: Union[Path, str]) -> None:
+        # print(f"Creating map for scene at: ", data_dir)
+        self._setup_paths(data_dir)
+        self.map_builder = VLMapBuilder(
+            self.data_dir,
+            self.map_config,
+            self.pose_path,
+            self.rgb_paths,
+            self.depth_paths,
+            self.base2cam_tf,
+            self.base_transform,
+            self.semantic_paths,
+            self.region_paths,
+            self.force,
+            self.store_all,
+        )
+        if self.map_config.pose_info.pose_type == "mobile_base":
+            self.map_builder.create_mobile_base_map()
+        elif self.map_config.pose_info.pose_type == "camera":
+            self.map_builder.create_camera_map()
+
+    def load_map_override(self, data_dir: str, path: str) -> bool:
+        self.map_save_path = Path(path)
+        return self.load_map_common(data_dir)
+
+    def load_map(self, data_dir: str, load_type: MapType = MapType.REGULAR, encoder: str = "lseg") -> bool:
+        map_prefix = self.map_config.map_prefix
+        if load_type == MapType.POSTPROCESSED:
+            self.map_save_path = (
+                Path(data_dir) / "vlmap" / f"{map_prefix}-postprocessed-{self.map_config.cell_size}.h5df"
+            )
+        elif load_type == MapType.INSTANCES:
+            self.map_save_path = Path(data_dir) / "vlmap" / f"{map_prefix}-instances-{self.map_config.cell_size}.h5df"
+        elif load_type == MapType.PREDICTED:
+            self.map_save_path = Path(data_dir) / "vlmap" / f"{map_prefix}-predicted-{self.map_config.cell_size}.h5df"
+        elif load_type == MapType.VLMAP_INSTANCES:
+            self.map_save_path = (
+                Path(data_dir) / "vlmap" / f"{map_prefix}-vlmaps-instances-{self.map_config.cell_size}.h5df"
+            )
+        elif load_type == MapType.OUR_INSTANCES:
+            self.map_save_path = (
+                Path(data_dir) / "vlmap" / f"{map_prefix}-our-instances-{self.map_config.cell_size}.h5df"
+            )
+        elif load_type == MapType.PREDICTED_POSTPROCESSED:
+            self.map_save_path = (
+                Path(data_dir) / "vlmap" / f"{map_prefix}-predicted-postprocessed-{self.map_config.cell_size}.h5df"
+            )
+        elif load_type == MapType.MEDIAN:
+            self.map_save_path = Path(data_dir) / "vlmap" / f"{map_prefix}-{self.map_config.cell_size}-median.h5df"
+        elif load_type == MapType.SAMPLE:
+            self.map_save_path = Path(data_dir) / "vlmap" / f"{map_prefix}-{self.map_config.cell_size}-sample.h5df"
+        elif load_type == MapType.TRANSFORMER_NEW:
+            # FIXME: parametrization
+            self.map_save_path = Path(data_dir) / "vlmap" / f"transformer-new-{encoder}.h5df"
+        elif load_type == MapType.TRANSFORMER_LORA:
+            # FIXME: parametrization
+            self.map_save_path = Path(data_dir) / "vlmap" / f"transformer-lora-{encoder}.h5df"
+        else:
+            self.map_save_path = Path(data_dir) / "vlmap" / f"{map_prefix}-{self.map_config.cell_size}.h5df"
+        return self.load_map_common(data_dir)
+
+    def load_map_common(self, data_dir: str) -> bool:
+        self._setup_paths(data_dir)
+
+        # print(f"Load map {self.map_save_path}")
+        if not self.map_save_path.exists():
+            print("Loading VLMap failed because the file doesn't exist.")
+            print(self.map_save_path)
+            return False
+        (
+            self.mapped_iter_list,
+            self.grid_feat,
+            self.grid_pos,
+            self.weight,
+            self.occupied_ids,
+            self.grid_rgb,
+            self.grid_semantic,
+            self.grid_region,
+            self.grid_instance,
+            self.grid_histogram,
+        ) = load_3d_map(self.map_save_path)
+
+        # print("read map from:", self.map_save_path)
+        # print("len(self.mapped_iter_list):", len(self.mapped_iter_list))
+        # print("self.grid_feat.shape:", self.grid_feat.shape)
+        # print("self.grid_pos.shape:", self.grid_pos.shape)
+        # print("self.grid_rgb.shape:", self.grid_rgb.shape)
+        # if(self.grid_semantic is not None):
+        #     print("self.grid_semantic.shape:", self.grid_semantic.shape)
+        # if (self.grid_region is not None):
+        #     print("self.grid_region.shape:", self.grid_region.shape)
+        # if(self.grid_instance is not None):
+        #     print("self.grid_instance.shape:", self.grid_instance.shape)
+        # print("self.occupied_ids.shape:", self.occupied_ids.shape)
+        # print("self.weight.shape:", self.weight.shape)
+        # print(" ")
+        return True
+
+    def _init_clip(self, clip_version="ViT-B/32"):
+        if hasattr(self, "clip_model"):
+            print("clip model is already initialized")
+            return
+        if torch.cuda.is_available():
+            self.device = "cuda"
+        # elif torch.backends.mps.is_available():
+        #     self.device = "mps"
+        else:
+            self.device = "cpu"
+        self.clip_version = clip_version
+        self.clip_feat_dim = {
+            "RN50": 1024,
+            "RN101": 512,
+            "RN50x4": 640,
+            "RN50x16": 768,
+            "RN50x64": 1024,
+            "ViT-B/32": 512,
+            "ViT-B/16": 512,
+            "ViT-L/14": 768,
+            "ViT-L/14@336px": 768,
+        }[self.clip_version]
+        # print("Loading CLIP model...")
+        self.clip_model, self.preprocess = clip.load(self.clip_version)  # clip.available_models()
+        self.clip_model.to(self.device).eval()
+
+    def init_categories(self, categories: List[str], use_multiple_templates: bool) -> np.ndarray:
+        self.categories = categories
+        self.scores_mat = get_lseg_score(
+            self.clip_model,
+            self.categories,
+            self.grid_feat,
+            self.clip_feat_dim,
+            use_multiple_templates=use_multiple_templates,
+            add_other=True,
+        )  # score for name and other
+        return self.scores_mat
+
+    def index_map(
+        self, language_desc: str, use_multiple_templates: bool, with_init_cat: bool = True, add_other: bool = False, complement: list = None
+    ):
+        if with_init_cat and self.scores_mat is not None and self.categories is not None:
+            cat_id = find_similar_category_id_static(language_desc, self.categories)
+            scores_mat = self.scores_mat
+        else:
+            if with_init_cat:
+                raise Exception(
+                    "Categories are not preloaded. Call init_categories(categories: List[str]) to initialize categories."
+                )
+            scores_mat = get_lseg_score(
+                self.clip_model,
+                [language_desc],
+                self.grid_feat,
+                self.clip_feat_dim,
+                # use_multiple_templates=True,
+                use_multiple_templates=use_multiple_templates,
+                # FIXME
+                add_other=add_other,
+                complement=complement
+            )  # score for name and other
+            cat_id = 0
+
+        max_ids = np.argmax(scores_mat, axis=1)
+        mask = max_ids == cat_id
+        return mask, scores_mat
+
+    def customize_obstacle_map(
+        self,
+        potential_obstacle_names: List[str],
+        obstacle_names: List[str],
+        vis: bool = False,
+    ):
+        if self.obstacles_cropped is None and self.obstacles_map is None:
+            self.generate_obstacle_map()
+        if not hasattr(self, "clip_model"):
+            print("init_clip in customize obstacle map")
+            self._init_clip(self.map_config.visual_encoder.vlm_version)
+
+        self.obstacles_new_cropped = get_dynamic_obstacles_map_3d(
+            self.clip_model,
+            self.obstacles_cropped,
+            self.map_config.potential_obstacle_names,
+            self.map_config.obstacle_names,
+            self.grid_feat,
+            self.grid_pos,
+            self.rmin,
+            self.cmin,
+            self.clip_feat_dim,
+            vis=vis,
+        )
+        self.obstacles_new_cropped = Map._dilate_map(
+            self.obstacles_new_cropped == 0,
+            self.map_config.dilate_iter,
+            self.map_config.gaussian_sigma,
+        )
+        self.obstacles_new_cropped = self.obstacles_new_cropped == 0
+
+    # def load_categories(self, categories: List[str] = None):
+    #     if categories is None:
+    #         if self.map_config["categories"] == "mp3d":
+    #             categories = mp3dcat.copy()
+    #         elif self.map_config["categories"] == "ai2thor":
+    #             categories = ai2thor_class_list.copy()
+
+    #     predicts = segment_lseg_map(self.clip_model, categories, self.map_cropped, self.clip_feat_dim)
+    #     no_map_mask = self.obstacles_new_cropped > 0  # free space in the map
+
+    #     self.labeled_map_cropped = predicts.reshape((self.xmax - self.xmin + 1, self.ymax - self.ymin + 1))
+    #     self.labeled_map_cropped[no_map_mask] = -1
+    #     labeled_map = -1 * np.ones((self.map.shape[0], self.map.shape[1]))
+
+    #     labeled_map[self.xmin : self.xmax + 1, self.ymin : self.ymax + 1] = self.labeled_map_cropped
+
+    #     self.categories = categories
+    #     self.labeled_map_full = labeled_map
+
+    # def load_region_categories(self, categories: List[str]):
+    #     if "other" not in categories:
+    #         self.region_categories = ["other"] + categories
+    #     predicts = segment_lseg_map(
+    #         self.clip_model, self.region_categories, self.map_cropped, self.clip_feat_dim, add_other=False
+    #     )
+    #     self.labeled_region_map_cropped = predicts.reshape((self.xmax - self.xmin + 1, self.ymax - self.ymin + 1))
+
+    # def get_region_predict_mask(self, name: str) -> np.ndarray:
+    #     assert self.region_categories
+    #     cat_id = find_similar_category_id_static(name, self.region_categories)
+    #     mask = self.labeled_map_cropped == cat_id
+    #     return mask
+
+    # def get_predict_mask(self, name: str) -> np.ndarray:
+    #     cat_id = find_similar_category_id_static(name, self.categories)
+    #     return self.labeled_map_cropped == cat_id
+
+    # def get_distribution_map(self, name: str) -> np.ndarray:
+    #     assert self.categories
+    #     cat_id = find_similar_category_id_static(name, self.categories)
+    #     if self.scores_map is None:
+    #         scores_list = get_lseg_score(self.clip_model, self.categories, self.map_cropped, self.clip_feat_dim)
+    #         h, w = self.map_cropped.shape[:2]
+    #         self.scores_map = scores_list.reshape((h, w, len(self.categories)))
+    #     # labeled_map_cropped = self.labeled_map_cropped.copy()
+    #     return self.scores_map[:, :, cat_id]
+
+    def get_pos(self, name: str, use_prompt_engineering: bool, use_postprocessing: bool = True, with_init_cat: bool = True) -> Tuple[
+        List[List[int]],
+        List[List[float]],
+        List[np.ndarray],
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+    ]:
+        """
+        Get the contours, centers, and bbox list of a certain category
+        on a full map
+        """
+        assert self.categories
+        # cat_id = find_similar_category_id_static(name, self.categories)
+        # labeled_map_cropped = self.scores_mat.copy()  # (N, C) N: number of voxels, C: number of categories
+        # labeled_map_cropped = np.argmax(labeled_map_cropped, axis=1)  # (N,)
+        # pc_mask = labeled_map_cropped == cat_id # (N,)
+        # self.grid_pos[pc_mask]
+        pc_mask, scores_mat = self.index_map(name, use_prompt_engineering, with_init_cat=with_init_cat)
+        mask_2d = pool_3d_label_to_2d(pc_mask, self.grid_pos, self.gs)
+        mask_2d = mask_2d[self.rmin : self.rmax + 1, self.cmin : self.cmax + 1]
+        # print(f"showing mask for object cat {name}")
+        # cv2.imshow(f"mask_{name}", (mask_2d.astype(np.float32) * 255).astype(np.uint8))
+        # cv2.waitKey()
+        if use_postprocessing:
+            postprocessing_1 = binary_closing(mask_2d, iterations=3)
+            postprocessing_2 = gaussian_filter(postprocessing_1.astype(float), sigma=0.8, truncate=3)
+            postprocessing_3 = postprocessing_2 > 0.5
+            # cv2.imshow(f"mask_{name}_gaussian", (foreground * 255).astype(np.uint8))
+            postprocessing_4 = binary_dilation(postprocessing_3)
+            # cv2.imshow(f"mask_{name}_processed", (foreground.astype(np.float32) * 255).astype(np.uint8))
+            # cv2.waitKey()
+            prediction = postprocessing_4
+        else:
+            postprocessing_1 = np.zeros_like(mask_2d)
+            postprocessing_2 = np.zeros_like(mask_2d)
+            postprocessing_3 = np.zeros_like(mask_2d)
+            postprocessing_4 = np.zeros_like(mask_2d)
+            prediction = mask_2d
+
+        contours, centers, bbox_list, _, mask = get_segment_islands_pos(prediction, 1)
+        # print("centers", centers)
+
+        # whole map position
+        for i in range(len(contours)):
+            centers[i][0] += self.rmin
+            centers[i][1] += self.cmin
+            bbox_list[i][0] += self.rmin
+            bbox_list[i][1] += self.rmin
+            bbox_list[i][2] += self.cmin
+            bbox_list[i][3] += self.cmin
+            for j in range(len(contours[i])):
+                contours[i][j, 0] += self.rmin
+                contours[i][j, 1] += self.cmin
+
+        return (
+            contours,
+            centers,
+            bbox_list,
+            mask,
+            pc_mask,
+            mask_2d,
+            postprocessing_1,
+            postprocessing_2,
+            postprocessing_3,
+            postprocessing_4,
+        )
+
+    def get_instances(self, label_) -> Tuple[List[List[int]], List[List[float]], List[np.ndarray], Any]:
+        """
+        Get the contours, centers, and bbox list of a certain category
+        on a full map
+        """
+        # assert self.categories
+        print(self.grid_semantic.shape, label_)
+        pc_mask = None
+        # pc_mask = self.index_map(name, with_init_cat=True)
+        pc_mask = self.grid_semantic == label_
+
+        if isinstance(pc_mask, bool):
+            return None, None, None
+
+        print(pc_mask.size, pc_mask.shape, np.any(pc_mask))
+        mask_2d = pool_3d_label_to_2d(pc_mask, self.grid_pos, self.gs)
+        mask_2d = mask_2d[self.rmin : self.rmax + 1, self.cmin : self.cmax + 1]
+
+        foreground = binary_closing(mask_2d, iterations=3)
+        foreground = gaussian_filter(foreground.astype(float), sigma=0.8, truncate=3)
+        foreground = foreground > 0.5
+
+        foreground = binary_dilation(foreground)
+
+        contours, centers, bbox_list, _ = get_segment_islands_pos(foreground, 1)
+        # print("centers", centers)
+
+        # whole map position
+        for i in range(len(contours)):
+            centers[i][0] += self.rmin
+            centers[i][1] += self.cmin
+            bbox_list[i][0] += self.rmin
+            bbox_list[i][1] += self.rmin
+            bbox_list[i][2] += self.cmin
+            bbox_list[i][3] += self.cmin
+            for j in range(len(contours[i])):
+                contours[i][j, 0] += self.rmin
+                contours[i][j, 1] += self.cmin
+
+        return contours, centers, bbox_list

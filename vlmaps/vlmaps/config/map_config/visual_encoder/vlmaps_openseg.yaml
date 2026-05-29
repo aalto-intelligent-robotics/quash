@@ -1,0 +1,7 @@
+name: "OpenSeg"
+vlm_version: "ViT-L/14@336px"
+embedding_size: 768
+model_path: "${data_paths.home}/code/vlmaps/networks/openseg_exported_clip"
+crop_size: 480  # Not used for OpenSeg, here for compatibility with LSeg
+base_size: 520  # Not used for OpenSeg, here for compatibility with LSeg
+map_prefix: vlmaps-openseg

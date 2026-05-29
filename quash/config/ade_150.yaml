@@ -1,0 +1,5 @@
+---
+  dataset: ade_150
+  data_dir: /home/user/data/datasets/Datasets_HSN/ADEChallengeData2016
+  used_classes: /home/user/<path/to/quash>/config/ade150.json
+  split: both #both #training #validation

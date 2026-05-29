@@ -1,0 +1,10 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps
+  - params: default
+  # - data_paths: flat
+  # - map_config: flat
+  # - params: flat
+  - _self_
+scene_id: 0
+type: None

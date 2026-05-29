@@ -1,0 +1,22 @@
+mpcat40index	mpcat40	hex	wnsynsetkey	nyu40	skip	labels
+1	wall	#aec7e8	wall.n.01,baseboard.n.01,paneling.n.01	wall		wallpaper
+2	floor	#708090	floor.n.01,rug.n.01,mat.n.01,bath_mat.n.01,landing.n.01	floor,floor mat
+3	cabinet	#1f77b4	cabinet.n.01,cupboard.n.01	cabinet
+4	bed	#e377c2	bed.n.01,bedpost.n.01,bedstead.n.01,headboard.n.01,footboard.n.01,bedspread.n.01,mattress.n.01,sheet.n.03	bed
+5	chair	#98df8a	chair.n.01,beanbag.n.01	chair
+6	sofa	#2ca02c	sofa.n.01	sofa
+7	table	#ff7f0e	table.n.02,dressing.n.04	table,desk	counter.n.01
+8	door	#c5b0d5	door.n.01,doorframe.n.01,doorway.n.01,doorknob.n.01,archway.n.01	door		garage door
+9	window	#ff9896	window.n.01,windowsill.n.01,window_frame.n.01,windowpane.n.02,window_screen.n.01	window
+10	bookshelf	#c49c94	bookshelf.n.01,shelf.n.01,rack.n.05	shelves
+11	picture	#d62728	picture.n.01,photograph.n.01,picture_frame.n.01	picture
+12	counter	#a55194	countertop.n.01,counter.n.01,kitchen_island.n.01	counter
+13	desk	#ff7f0e	table.n.02,dressing.n.04	table,desk	counter.n.01
+14	curtain	#de9ed6	curtain.n.01	curtain,shower curtain		curtain rod,shower curtain rod,shower rod
+15	refridgerator	#e7cb94	home_appliance.n.01,stove.n.02,dryer.n.01	refridgerator		washing machine and dryer
+16	shower curtain	#de9ed6	curtain.n.01	curtain,shower curtain		curtain rod,shower curtain rod,shower rod
+17	toilet	#e7969c	toilet.n.01,bidet.n.01	toilet
+18	sink	#843c39	sink.n.01	sink
+19	bathtub	#393b79	bathtub.n.01	bathtub
+20	other	#7f7f7f		person,otherstructure	unknown.n.01
+21	ceiling	#9c9ede	ceiling.n.01,roof.n.01	ceiling

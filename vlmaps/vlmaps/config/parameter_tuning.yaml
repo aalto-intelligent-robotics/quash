@@ -1,0 +1,33 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps
+  - params: default
+  - _self_
+nav:
+  valid_range: 1
+  vis: False
+  tasks_per_scene: 20
+scene_id: 0
+
+# indexing params
+decay_rate: 0.01
+index_2d: False
+classes: ${data_paths.home}/code/vlmaps/cfg/mpcat40_edit.tsv
+delimiter: ;
+batch: True
+output_path: ${data_paths.home}/code/vlmaps/data/mapdata/analysis-density/
+force: False
+use_prompt_engineering: True
+density: True
+use_postprocessing: False
+median: False
+named_experiment: True
+experiment: null
+direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-lseg-0.05.h5df"
+num_trials: 100
+classifier: svm
+metric: f1
+type: params
+synonym_type: 0
+antonym_ratio: -1
+sample_map: True

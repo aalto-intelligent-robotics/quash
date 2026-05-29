@@ -1,0 +1,35 @@
+---
+  C: 1.0 # float
+  kernel: 'rbf' # 'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'
+  degree: 3 # int
+  gamma: 'scale' # 'scale', 'auto' or float
+  coef0: 0.0 # float
+  shrinking: True # bool
+  probability: False # bool
+  tol: 0.001 # float
+  class_weight: None # dict or 'balanced'
+  # Not optimized
+  cache_size: 200 # float
+  verbose: False # bool
+  max_iter: -1 # int
+  decision_function_shape: 'ovr' # 'ovo', 'ovr'
+  break_ties: False # bool
+  random_state: None # int
+
+# default params
+######################
+# C: 1.0
+# kernel: 'rbf'
+# degree: 3
+# gamma: 'scale'
+# coef0: 0.0
+# shrinking: True
+# probability: False
+# tol: 0.001
+# cache_size: 200
+# class_weight: None
+# verbose: False
+# max_iter: -1
+# decision_function_shape: 'ovr'
+# break_ties: False
+# random_state: None

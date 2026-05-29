@@ -1,0 +1,41 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps
+  - params: default
+  - _self_
+nav:
+  valid_range: 1
+  vis: False
+  tasks_per_scene: 20
+scene_id: 0
+
+# indexing params
+decay_rate: 0.01
+index_2d: False
+classes: ${data_paths.home}/code/vlmaps/cfg/mpcat40_edit.tsv
+delimiter: ;
+output_path: ${data_paths.home}/code/vlmaps/data/mapdata/analysis-density-ICRA/
+force: False
+prompt_engineering: 0 # 0 = no, 1 = mean, 2 = all, 3 = only
+density: False
+use_postprocessing: False
+named_experiment: True
+experiment: null
+verbose_experiment: True
+sample_synonyms: -1
+remove_aggregate_classes: True
+classifier: cosine-svm
+#classifier_config: /home/user/<path/to/quash>/methods/config/cosine-svm_default.yaml
+classifier_config: null
+debug: False
+no_synonyms: False
+variable_config: False
+prompts: default
+synonym_type: 0
+antonym_type: 0
+# map types
+median: False
+transformer: null
+sample: False
+complement: null
+metadata: null

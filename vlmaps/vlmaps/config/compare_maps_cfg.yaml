@@ -1,0 +1,37 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps
+  - params: default
+  - _self_
+nav:
+  valid_range: 1
+  vis: False
+  tasks_per_scene: 20
+scene_id: 0
+output: ${data_paths.home}/code/vlmaps/data/mapdata
+
+# indexing params
+decay_rate: 0.01
+index_2d: True
+init_categories: True
+regions: True
+# REGULAR = 0,
+# POSTPROCESSED = 1,
+# INSTANCES = 2,
+# PREDICTED = 3,
+# VLMAP_INSTANCES = 4,
+# OUR_INSTANCES = 5,
+# PREDICTED_POSTPROCESSED = 6,
+ask_for_type: True
+type: 0
+ask_for_color: False
+# 0: rgb
+# 1: semantic
+# 2: regions
+# 3: instances
+color: 0
+filter: False
+ask_for_filter: True
+filter_label: 27
+classes: ${data_paths.home}/code/vlmaps/cfg/mpcat40_edit.tsv
+delimiter: ;

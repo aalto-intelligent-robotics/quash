@@ -1,0 +1,11 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps
+  - params: default
+  - _self_
+nav:
+  valid_range: 1
+  vis: True
+  tasks_per_scene: 20
+scene_id: 0
+direct_path_path: /home/user/hdd/datasets/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-lseg-0.05-alldata.h5df

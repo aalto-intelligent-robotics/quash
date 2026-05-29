@@ -1,0 +1,7 @@
+name: "LSeg"
+vlm_version: "ViT-B/32"
+embedding_size: 512
+model_path: "${data_paths.home}/code/vlmaps/networks/demo_e200.ckpt"
+crop_size: 480
+base_size: 520
+map_prefix: vlmaps-lseg

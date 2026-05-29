@@ -1,0 +1,11 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps
+  - params: default
+  - _self_
+id: 0
+dir: null
+type: 2
+save_path: null
+
+

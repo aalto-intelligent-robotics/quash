@@ -1,0 +1,5 @@
+---
+  dataset: ade_all
+  data_dir: /home/user//data/datasets/Datasets_HSN/ADE20K_2021_17_01
+  used_classes: all
+  cache: r

@@ -1,0 +1,23 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps
+  - params: default
+  - _self_
+nav:
+  valid_range: 1
+  vis: False
+  tasks_per_scene: 20
+scene_id: 0
+
+# indexing params
+decay_rate: 0.01
+classes: ${data_paths.home}/code/vlmaps/cfg/mpcat40_edit.tsv
+delimiter: ;
+index_2d: False
+init_categories: False
+batch: True
+postprocessing: True
+direct_path: True
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-lseg-0.05-median.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-lseg-0.05.h5df"
+direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/transformer.h5df"

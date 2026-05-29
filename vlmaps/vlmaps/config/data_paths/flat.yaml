@@ -1,0 +1,4 @@
+home: /home/user
+habitat_scene_dir: "/home/user/hdd/datasets/flat_dataset/"
+vlmaps_data_dir: "/home/user/hdd/datasets/vlmaps_dataset_flat/"
+map_prefix: "vlmaps" # "vlmaps", "vlmaps-openseg

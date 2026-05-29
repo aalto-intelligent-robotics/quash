@@ -1,0 +1,5 @@
+---
+  dataset: ade_full
+  data_dir: /home/user//data/datasets/Datasets_HSN/ADE20K_2021_17_01
+  used_classes: /home/user/<path/to/quash>/config/ade847.json
+  cache: rw

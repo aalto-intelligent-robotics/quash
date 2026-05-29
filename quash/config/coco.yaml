@@ -1,0 +1,6 @@
+---
+  dataset: coco
+  annotation_file: benchmarks/coco/annotations/instances_val2014.json
+  img_dir: /home/user/data/datasets/Datasets_HSN/coco/images/val2014
+  task: detection
+  listmode: true

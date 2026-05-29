@@ -1,0 +1,6 @@
+---
+  dataset: pascal_context_459
+  annotation_dir: /home/user/data/datasets/Datasets_HSN/VOC2010/PASCAL-Context/trainval
+  labels_file: /home/user/data/datasets/Datasets_HSN/VOC2010/PASCAL-Context/labels.txt
+  img_dir: /home/user/data/datasets/Datasets_HSN/VOC2010/JPEGImages
+  used_classes: /home/user/<path/to/quash>/config/pc459.json

@@ -11,10 +11,43 @@ We evaluate our methods through extensive experiments, querying both maps and st
 
 ## Installation
 
+There are two repositories "quash" and "vlmaps". "quash" hosts the method and the image benchmarks. "vlmaps" hosts the map benchmarks. Both repositories have self-contained Dockerfiles. Remember to set up the setup_environment.sh scripts to correct paths.
+
+Running image benchmarks:
 ```bash
-    # TODO
+    cd quash
+    make # build the docker
+    source setup_env.sh # setup environment paths
+    python run_benchmark.py -c config/coco.yaml # --help for the parametrization
+    python run_benchmark.py -c config/pascal_context_459.yaml # --help for the parametrization
+```
+
+Running map benchmarks:
+```bash
+    cd vlmaps
+    make # build the docker
+    source setup_environment.sh # setup environment paths
+    ./1_0_run_all_vlmaps.sh # build all maps
+    cd scripts
+    ./0_run_all_experiments.sh
 ```
 
 ## Citation
 
-TODO
+If you find this work useful, please consider citing:
+
+```bibtex
+@inproceedings{pekkanen_2026_quash
+    title={QuASH: Using Natural-Language Heuristics to Query Visual-Language Maps},
+    author={Pekkanen, Matti and Verdoja, Francesco and Kyrki, Ville},
+    booktitle={2026 IEEE International Conference on Robotics and Automation (ICRA)},
+    publisher={IEEE},
+    year={2026},
+    month={June},
+    address={Vienna, Austria},
+    volume={},
+    number={},
+    pages={XX--YY},
+}
+
+```

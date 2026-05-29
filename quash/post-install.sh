@@ -1,0 +1,1 @@
+pip3 install git+https://github.com/zhanghang1989/PyTorch-Encoding/

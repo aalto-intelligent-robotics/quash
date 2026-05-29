@@ -1,0 +1,2 @@
+./measure_classification_density_all.sh --experiment ICRA-ablation-regular-prompt --type b --prompt_eng 0
+./measure_classification_density_all.sh --experiment ICRA-ablation-regular-prompt --type b --prompt_eng 1

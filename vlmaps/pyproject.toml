@@ -1,0 +1,13 @@
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pylint."messages control"]
+disable = [
+  "missing-class-docstring",
+  "missing-module-docstring",
+  "missing-function-docstring",
+  "import-error",
+]
+
+[tool.pyright]
+reportUnknownMemberType = false

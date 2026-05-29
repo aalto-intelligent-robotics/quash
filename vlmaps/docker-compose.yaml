@@ -1,0 +1,44 @@
+version: "3.9"
+
+x-app-base: &app-base
+    image: quash-vlmaps:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+      args:
+        - UID=${UID}
+        - GID=${GID}
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${HOME}/code:/home/user/code
+      - ${HOME}/data:/home/user/data
+      - ${HOME}/hdd:/home/user/hdd
+      - ${HOME}:/home/user
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw"
+    network_mode: host
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+
+services:
+  app0:
+    <<: *app-base
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+
+  app1:
+    <<: *app-base
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]

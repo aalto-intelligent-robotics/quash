@@ -1,0 +1,45 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps_lseg
+  - params: default
+  - _self_
+nav:
+  valid_range: 1
+  vis: False
+  tasks_per_scene: 20
+scene_id: 0
+
+# indexing params
+decay_rate: 0.01
+classes: ${data_paths.home}/code/vlmaps/cfg/mpcat40_edit.tsv
+delimiter: ;
+index_2d: False
+init_categories: False
+batch: True
+postprocessing: False
+mask_map: True
+score_map: False
+direct_path: True
+# direct_path_path: "/home/user/hdd/2-vlmaps-maps/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-lseg-0.05-nort.h5df"
+#direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-lseg-0.05-sample.h5df"
+
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/gTV8FGcVJC9_1/vlmap/vlmaps-lseg-0.05.h5df"
+direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/jh4fc5c5qoQ_1/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/JmbYfDe2QKZ_1/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/JmbYfDe2QKZ_2/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/mJXqzFtmKg4_1/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/ur6pFq6Qu1A_1/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/UwV83HsGsw3_1/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/Vt2qJdWjCF2_1/vlmap/vlmaps-lseg-0.05.h5df"
+# direct_path_path: "/home/user/hdd/datasets/vlmaps_dataset/YmJkqBEsHnH_1/vlmap/vlmaps-lseg-0.05.h5df"
+
+# direct_path_path: "/home/user/data/dbg-maps/vlmaps-lseg-0.05-sample.h5df"
+# direct_path_path: "/home/user/data/dbg-maps/vlmaps-lseg-0.05-median.h5df"
+# direct_path_path: "/home/user/data/dbg-maps/transformer-lora-lseg.h5df"
+# direct_path_path: "/home/user/data/dbg-maps/vlmaps-openseg-0.05.h5df"
+# direct_path_path: "/home/user/data/dbg-maps/vlmaps-openseg-0.05-sample.h5df"
+# direct_path_path: "/home/user/data/dbg-maps/vlmaps-openseg-0.05-median.h5df"
+# direct_path_path: "/home/user/data/dbg-maps/transformer-lora-openseg.h5df"
+use_prompt_engineering: False

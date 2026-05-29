@@ -1,0 +1,25 @@
+defaults:
+  - data_paths: default
+  - map_config: vlmaps_openseg
+  - params: default
+  - _self_
+nav:
+  valid_range: 1
+  vis: False
+  tasks_per_scene: 20
+scene_id: 0
+
+# indexing params
+decay_rate: 0.01
+classes: ${data_paths.home}/code/vlmaps/cfg/mpcat40_edit.tsv
+delimiter: ;
+index_2d: False
+init_categories: False
+batch: True
+postprocessing: True
+mask_map: True
+score_map: False
+direct_path: True
+#direct_path_path: "/mnt/hdd/2-vlmaps-maps/vlmap/vlmaps-openseg-0.2.h5df"
+direct_path_path: "/home/user/hdd/2-vlmaps-maps/vlmaps_dataset/5LpN3gDmAk7_1/vlmap/vlmaps-openseg-0.05.h5df"
+use_prompt_engineering: False

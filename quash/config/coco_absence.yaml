@@ -1,0 +1,8 @@
+---
+  dataset: coco_absence
+  annotation_file: benchmarks/coco/annotations/instances_val2014.json
+  img_dir: coco_imgs
+  absence_model: gpt3.5-turbo
+  query_absence: True
+  offline_absence: True
+  temp_folder: "temp"
